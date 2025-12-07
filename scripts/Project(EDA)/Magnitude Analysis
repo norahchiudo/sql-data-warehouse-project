@@ -1,0 +1,64 @@
+--PROJECT
+--EXPLORATORY DATA ANALYSIS
+--Magnitude Analysis(Compares the measured values by categories)
+
+--Find Total Customers by Country
+SELECT country,
+COUNT(customer_key) AS total_customers
+FROM gold.dim_customer
+GROUP BY country
+ORDER BY total_customers DESC;
+
+--Find Total Customers by Gender
+SELECT gender,
+COUNT(customer_key) AS total_customer
+FROM gold.dim_customer
+GROUP BY gender
+ORDER BY total_customer DESC;
+
+--Find total Product by Category
+SELECT  category,
+COUNT(product_key) AS total_product
+FROM gold.dim_products
+GROUP BY category
+ORDER BY total_product DESC;
+
+--What is the Average Cost in each Category
+SELECT category,
+AVG(product_cost) AS avg_cost
+FROM gold.dim_products
+GROUP BY category
+ORDER BY avg_cost DESC;
+
+--What is the total Revenue generated for each Category
+SELECT p.category,
+SUM(s.sales_amount) total_revenue
+FROM gold.fact_sales s
+LEFT JOIN gold.dim_products p
+ON s.product_key = p.product_key
+GROUP BY p.category
+ORDER BY total_revenue DESC;
+
+--What is the total Revenue generated for each Customer
+SELECT c.customer_key,
+c.first_name,
+c.last_name,
+SUM(s.sales_amount) total_revenue
+FROM gold.fact_sales s
+LEFT JOIN gold.dim_customer c
+ON s.customer_key = c.customer_key
+GROUP BY c.customer_key,c.first_name,c.last_name
+ORDER BY total_revenue DESC;
+
+
+
+--What is the distribution of Sold Items across Countries
+
+SELECT c.country,
+SUM(s.quantity) total_sold_items
+FROM gold.fact_sales s
+LEFT JOIN gold.dim_customer c
+ON s.customer_key = c.customer_key
+GROUP BY c.country
+ORDER BY total_sold_items DESC;
+
